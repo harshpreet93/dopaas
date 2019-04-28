@@ -1,0 +1,12 @@
+#pre deploy steps
+test: []
+build: ["", "", ""]
+
+#deploy info
+domain: syneo.io
+lb: true
+droplet_type: 'blah'
+num_droplets: 3
+dc: 'blah'
+key_location: ''
+start: [""]
