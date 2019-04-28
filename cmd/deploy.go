@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/harshpreet93/dopaas/do_auth"
 	"github.com/spf13/cobra"
 )
 
@@ -16,5 +15,5 @@ var versionCmd = &cobra.Command{
 }
 
 func do(cmd *cobra.Command, args []string) {
-	do_auth.Auth()
+
 }
