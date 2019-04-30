@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/harshpreet93/dopaas/do_auth"
 	"log"
+	"os"
 )
 
 type projectState struct {
@@ -14,12 +15,13 @@ func GetState(projectName string) (*projectState, error) {
 	log.Println("getting current state of project ", projectName)
 	client := do_auth.Auth()
 	ctx := context.Background()
-	_, _, err := client.Projects.Get(ctx, projectName)
+	project, response, err := client.Projects.Get(ctx, projectName)
 
 	if err != nil {
-		log.Println("error getting project ", projectName, err)
+		log.Println("error getting project ", projectName, err, response)
+		os.Exit(1)
 	}
-
+	log.Println("project is ", project)
 	return &projectState{
 		numDroplets: 3,
 	}, nil
