@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_state"
 	"github.com/spf13/cobra"
 )
@@ -16,5 +17,6 @@ var versionCmd = &cobra.Command{
 }
 
 func do(cmd *cobra.Command, args []string) {
-	do_state.GetState("")
+	project_id := conf.GetConfig().Get("project_id").(string)
+	do_state.GetState(project_id)
 }

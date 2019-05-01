@@ -29,7 +29,7 @@ func getProject(projectId string) (*godo.Project, error) {
 
 	for {
 		projects, resp, err := client.Projects.List(ctx, opt)
-
+		log.Println("in loop")
 		if err != nil {
 			return nil, err
 		}
@@ -51,6 +51,7 @@ func getProject(projectId string) (*godo.Project, error) {
 		}
 
 		// set the page we want for the next request
+		log.Println("page is ", page)
 		opt.Page = page + 1
 	}
 
@@ -94,7 +95,6 @@ func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 
 func GetState(projectId string) (*projectState, error) {
 	log.Println("getting current state of project ", projectId)
-
 	project, err := getProject(projectId)
 
 	if err != nil {
