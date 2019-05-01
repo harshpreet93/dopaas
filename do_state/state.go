@@ -12,8 +12,8 @@ import (
 
 type dropletInfo struct {
 	slug string
-	dc string
-	tags [] string
+	dc   string
+	tags []string
 }
 
 type projectState struct {
@@ -58,7 +58,6 @@ func getProject(projectId string) (*godo.Project, error) {
 	return nil, errors.New("cannot find project with ID " + projectId)
 }
 
-
 func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 	fmt.Println("extracting project resource info")
 	client := do_auth.Auth()
@@ -73,11 +72,10 @@ func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 		}
 
 		for _, projectResource := range projectResources {
-			fmt.Println("project resource ", projectResource)
+			fmt.Println("project resource ", projectResource, " ", resp.Links.IsLastPage())
 		}
-
 		// if we are at the last page, break out the for loop
-		if resp.Links == nil || resp.Links.IsLastPage() {
+		if resp.Links == nil || resp.Links.IsLastPage() || resp.Links.Pages.First == resp.Links.Pages.Last {
 			break
 		}
 
@@ -85,7 +83,7 @@ func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 		if err != nil {
 			return nil, err
 		}
-
+		log.Println("page is ", page)
 		// set the page we want for the next request
 		opt.Page = page + 1
 	}

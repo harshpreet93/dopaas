@@ -17,6 +17,6 @@ var versionCmd = &cobra.Command{
 }
 
 func do(cmd *cobra.Command, args []string) {
-	project_id := conf.GetConfig().Get("project_id").(string)
-	do_state.GetState(project_id)
+	projectId := conf.GetConfig().Get("project_id").(string)
+	do_state.GetState(projectId)
 }

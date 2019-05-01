@@ -24,7 +24,7 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 }
 
 func getFieldFromFile(filepath string, fieldName string) string {
-	viper.SetConfigType("yaml") // or viper.SetConfigType("YAML")
+	viper.SetConfigType("yaml")
 
 	dat, err := ioutil.ReadFile(filepath)
 	if err != nil {
