@@ -8,16 +8,14 @@ import (
 	"github.com/harshpreet93/dopaas/do_auth"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
-type dropletInfo struct {
-	slug string
-	dc   string
-	tags []string
-}
+
 
 type projectState struct {
-	numDroplets []dropletInfo
+	droplets []*godo.Droplet
 }
 
 func getProject(projectId string) (*godo.Project, error) {
@@ -58,12 +56,15 @@ func getProject(projectId string) (*godo.Project, error) {
 	return nil, errors.New("cannot find project with ID " + projectId)
 }
 
-func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
+
+
+
+func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) {
 	fmt.Println("extracting project resource info")
 	client := do_auth.Auth()
 	ctx := context.Background()
 	opt := &godo.ListOptions{}
-
+	var droplets []*godo.Droplet
 	for {
 		projectResources, resp, err := client.Projects.ListResources(ctx, project.ID, opt)
 
@@ -73,6 +74,16 @@ func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 
 		for _, projectResource := range projectResources {
 			fmt.Println("project resource ", projectResource, " ", resp.Links.IsLastPage())
+			if strings.HasPrefix(projectResource.URN, "do:droplet:") {
+				dropletId, _ := strconv.Atoi( strings.TrimPrefix(projectResource.URN, "do:droplet:") )
+				log.Println("found droplet with id ", dropletId)
+				droplet, _, err := client.Droplets.Get(ctx, dropletId)
+				if err != nil {
+					log.Println("error getting droplet details", err)
+					os.Exit(1)
+				}
+				droplets = append(droplets, droplet)
+			}
 		}
 		// if we are at the last page, break out the for loop
 		if resp.Links == nil || resp.Links.IsLastPage() || resp.Links.Pages.First == resp.Links.Pages.Last {
@@ -83,7 +94,6 @@ func extractProjectResourceInfo(project *godo.Project) (*projectState, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Println("page is ", page)
 		// set the page we want for the next request
 		opt.Page = page + 1
 	}
@@ -106,5 +116,7 @@ func GetState(projectId string) (*projectState, error) {
 		log.Println("error getting current state", err)
 		os.Exit(1)
 	}
-	return currState, nil
+	projectState := &projectState{droplets: currState}
+	log.Println(projectState)
+	return projectState, nil
 }
