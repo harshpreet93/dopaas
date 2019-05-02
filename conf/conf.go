@@ -19,7 +19,7 @@ type DesiredState struct {
 func GetConfig() *viper.Viper {
 	os.Getwd()
 	conf := viper.New()
-	conf.SetConfigType("yaml") // or viper.SetConfigType("YAML")
+	conf.SetConfigType("yaml")
 	dat, err := ioutil.ReadFile("app.yml")
 	if err != nil {
 		log.Println("error reading yaml config ", err)

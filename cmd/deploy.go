@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/harshpreet93/dopaas/conf"
+	"github.com/harshpreet93/dopaas/do_action"
 	"github.com/harshpreet93/dopaas/do_state"
 	"github.com/spf13/cobra"
 	"log"
@@ -28,5 +29,9 @@ func do(cmd *cobra.Command, args []string) {
 	}
 	desiredState, err := conf.GetDesiredState()
 	fmt.Println(desiredState, currState)
-	//diff(currState, desiredState)
+	diff(currState, desiredState)
+}
+
+func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
+	return nil, nil
 }
