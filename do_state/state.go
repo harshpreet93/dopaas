@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type projectState struct {
+type ProjectState struct {
 	droplets []*godo.Droplet
 }
 
@@ -89,7 +89,7 @@ func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) 
 	return droplets, nil
 }
 
-func GetState(projectId string) (*projectState, error) {
+func GetState(projectId string) (*ProjectState, error) {
 	project, err := getProject(projectId)
 	if err != nil {
 		os.Exit(1)
@@ -98,6 +98,6 @@ func GetState(projectId string) (*projectState, error) {
 	if err != nil {
 		os.Exit(1)
 	}
-	projectState := &projectState{droplets: currState}
+	projectState := &ProjectState{droplets: currState}
 	return projectState, nil
 }

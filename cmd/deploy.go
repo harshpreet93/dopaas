@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_state"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
 )
 
 func init() {
@@ -18,5 +21,12 @@ var versionCmd = &cobra.Command{
 
 func do(cmd *cobra.Command, args []string) {
 	projectId := conf.GetConfig().Get("project_id").(string)
-	do_state.GetState(projectId)
+	currState, err := do_state.GetState(projectId)
+	if err != nil {
+		log.Println("Error getting current state. exiting", err)
+		os.Exit(1)
+	}
+	desiredState, err := conf.GetDesiredState()
+	fmt.Println(desiredState, currState)
+	//diff(currState, desiredState)
 }

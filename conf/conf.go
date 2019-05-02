@@ -2,6 +2,7 @@ package conf
 
 import (
 	"bytes"
+	"github.com/harshpreet93/dopaas/do_state"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
@@ -47,4 +48,15 @@ func GetConfig() *viper.Viper {
 	log.Println(dat)
 	log.Println("project ID is ", viper.Get("project_id"))
 	return conf
+}
+
+func GetDesiredState() (*do_state.ProjectState, error) {
+	desiredState := &do_state.ProjectState{}
+
+	for i := 0; i < GetConfig().GetInt("num_droplets"); i++ {
+		log.Println("adding desired droplet config ", i)
+		//TODO: Create dropletCreateRequests
+
+	}
+	return desiredState, nil
 }
