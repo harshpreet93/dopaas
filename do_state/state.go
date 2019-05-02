@@ -3,7 +3,6 @@ package do_state
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/harshpreet93/dopaas/do_auth"
 	"log"
@@ -53,7 +52,6 @@ func getProject(projectId string) (*godo.Project, error) {
 }
 
 func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) {
-	fmt.Println("extracting project resource info")
 	client := do_auth.Auth()
 	ctx := context.Background()
 	opt := &godo.ListOptions{}
@@ -66,13 +64,10 @@ func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) 
 		}
 
 		for _, projectResource := range projectResources {
-			fmt.Println("project resource ", projectResource, " ", resp.Links.IsLastPage())
 			if strings.HasPrefix(projectResource.URN, "do:droplet:") {
 				dropletId, _ := strconv.Atoi(strings.TrimPrefix(projectResource.URN, "do:droplet:"))
-				log.Println("found droplet with id ", dropletId)
 				droplet, _, err := client.Droplets.Get(ctx, dropletId)
 				if err != nil {
-					log.Println("error getting droplet details", err)
 					os.Exit(1)
 				}
 				droplets = append(droplets, droplet)
