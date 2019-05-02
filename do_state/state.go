@@ -12,14 +12,11 @@ import (
 	"strings"
 )
 
-
-
 type projectState struct {
 	droplets []*godo.Droplet
 }
 
 func getProject(projectId string) (*godo.Project, error) {
-	fmt.Println("finding project")
 	client := do_auth.Auth()
 	ctx := context.Background()
 	// create options. initially, these will be blank
@@ -27,7 +24,6 @@ func getProject(projectId string) (*godo.Project, error) {
 
 	for {
 		projects, resp, err := client.Projects.List(ctx, opt)
-		log.Println("in loop")
 		if err != nil {
 			return nil, err
 		}
@@ -56,9 +52,6 @@ func getProject(projectId string) (*godo.Project, error) {
 	return nil, errors.New("cannot find project with ID " + projectId)
 }
 
-
-
-
 func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) {
 	fmt.Println("extracting project resource info")
 	client := do_auth.Auth()
@@ -75,7 +68,7 @@ func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) 
 		for _, projectResource := range projectResources {
 			fmt.Println("project resource ", projectResource, " ", resp.Links.IsLastPage())
 			if strings.HasPrefix(projectResource.URN, "do:droplet:") {
-				dropletId, _ := strconv.Atoi( strings.TrimPrefix(projectResource.URN, "do:droplet:") )
+				dropletId, _ := strconv.Atoi(strings.TrimPrefix(projectResource.URN, "do:droplet:"))
 				log.Println("found droplet with id ", dropletId)
 				droplet, _, err := client.Droplets.Get(ctx, dropletId)
 				if err != nil {
@@ -98,25 +91,18 @@ func extractProjectResourceInfo(project *godo.Project) ([]*godo.Droplet, error) 
 		opt.Page = page + 1
 	}
 
-	return nil, nil
+	return droplets, nil
 }
 
 func GetState(projectId string) (*projectState, error) {
-	log.Println("getting current state of project ", projectId)
 	project, err := getProject(projectId)
-
 	if err != nil {
-		log.Println("error getting project ", err)
 		os.Exit(1)
 	}
-
 	currState, err := extractProjectResourceInfo(project)
-
 	if err != nil {
-		log.Println("error getting current state", err)
 		os.Exit(1)
 	}
 	projectState := &projectState{droplets: currState}
-	log.Println(projectState)
 	return projectState, nil
 }
