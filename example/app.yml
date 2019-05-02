@@ -5,8 +5,9 @@ project_id: "30d154e8-a45c-4f2f-8228-e768bc0d4d73"
 #deploy info
 domain: syneo.io
 lb: true
-droplet_type: 'blah'
-num_droplets: 3
-dc: 'blah'
+SizeSlug: "sampleSizeSlug"
+NumDroplets: 3
+Region: "sampleRegionSlug"
+ImageSlug: "sampleImageSlug"
 key_location: ''
 start: [""]
