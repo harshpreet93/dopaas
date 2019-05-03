@@ -12,7 +12,7 @@ import (
 )
 
 type ProjectState struct {
-	droplets []*godo.Droplet
+	Droplets []*godo.Droplet
 }
 
 func getProject(projectId string) (*godo.Project, error) {

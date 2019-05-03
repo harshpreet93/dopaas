@@ -33,5 +33,9 @@ func do(cmd *cobra.Command, args []string) {
 }
 
 func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
+	var actions []*do_action.Action
+	if desiredState.NumDroplets > len( state.Droplets ) {
+		actions := append( actions, &do_action.CreateDropletsAction{} )
+	}
 	return nil, nil
 }

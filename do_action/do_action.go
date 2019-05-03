@@ -1,9 +1,5 @@
 package do_action
 
-type Action struct {
-
-}
-
-func (*Action) Execute() error {
-	return nil
+type Action interface {
+	Execute() error
 }
