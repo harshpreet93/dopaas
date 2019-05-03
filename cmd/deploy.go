@@ -50,7 +50,10 @@ func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_
 	}
 
 	if desiredState.NumDroplets > len(state.Droplets) {
-		var add do_action.Action = &do_action.AddDroplets{DesiredNum: desiredState.NumDroplets - len(state.Droplets)}
+		var add do_action.Action = &do_action.AddDroplets{DesiredNum: desiredState.NumDroplets - len(state.Droplets),
+			ImageSlug: conf.GetConfig().GetString("ImageSlug"),
+			SizeSlug:  conf.GetConfig().GetString("SizeSlug"),
+			Region:    conf.GetConfig().GetString("Region")}
 		actions = append(actions, &add)
 	}
 	return actions, nil
