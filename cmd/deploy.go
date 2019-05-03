@@ -21,7 +21,7 @@ var versionCmd = &cobra.Command{
 }
 
 func do(cmd *cobra.Command, args []string) {
-	projectId := conf.GetConfig().Get("project_id").(string)
+	projectId := conf.GetConfig().Get("project_name").(string)
 	currState, err := do_state.GetState(projectId)
 	if err != nil {
 		log.Println("Error getting current state. exiting", err)
