@@ -2,6 +2,7 @@
 test: []
 build: ["", "", ""]
 project_id: "30d154e8-a45c-4f2f-8228-e768bc0d4d73"
+project_name: "sample-project"
 #deploy info
 domain: syneo.io
 lb: true
