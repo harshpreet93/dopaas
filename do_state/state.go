@@ -98,6 +98,6 @@ func GetState(projectId string) (*ProjectState, error) {
 	if err != nil {
 		os.Exit(1)
 	}
-	projectState := &ProjectState{droplets: currState}
+	projectState := &ProjectState{Droplets: currState}
 	return projectState, nil
 }

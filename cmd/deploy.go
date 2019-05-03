@@ -29,13 +29,29 @@ func do(cmd *cobra.Command, args []string) {
 	}
 	desiredState, err := conf.GetDesiredState()
 	fmt.Println(desiredState, currState)
-	diff(currState, desiredState)
+	actions, err := diff(currState, desiredState)
+	if err != nil {
+		log.Println("Error calculating actions to get to desired state ", err)
+		os.Exit(1)
+	}
+	for _, action := range actions {
+		log.Println("action required ", *action)
+		(*action).Execute()
+	}
 }
 
 func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
 	var actions []*do_action.Action
-	if desiredState.NumDroplets > len( state.Droplets ) {
-		actions := append( actions, &do_action.CreateDropletsAction{} )
+
+	if desiredState.NumDroplets < len(state.Droplets) {
+		// TODO: if something must be destroyed and not all can be destroyed......which should be preferred for destruction?
+		var destroy do_action.Action = &do_action.DestroyDropletsAction{}
+		actions = append(actions, &destroy)
 	}
-	return nil, nil
+
+	if desiredState.NumDroplets > len(state.Droplets) {
+		var add do_action.Action = &do_action.AddDroplets{DesiredNum: desiredState.NumDroplets - len(state.Droplets)}
+		actions = append(actions, &add)
+	}
+	return actions, nil
 }

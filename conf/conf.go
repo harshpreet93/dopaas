@@ -10,9 +10,9 @@ import (
 
 type DesiredState struct {
 	NumDroplets int
-	SizeSlug string
-	Region string
-	ImageSlug string
+	SizeSlug    string
+	Region      string
+	ImageSlug   string
 }
 
 // marshal config file into a struct here
