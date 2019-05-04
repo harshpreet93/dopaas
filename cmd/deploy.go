@@ -9,13 +9,16 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"os"
+	"strconv"
 )
 
 func init() {
-	rootCmd.AddCommand(versionCmd)
+	var dryRun bool
+	rootCmd.LocalFlags().BoolVarP(&dryRun, "--dryrun", "-d", false, "Show what deploy would do instead of actually doing it")
+	rootCmd.AddCommand(deployCmd)
 }
 
-var versionCmd = &cobra.Command{
+var deployCmd = &cobra.Command{
 	Use:   "deploy",
 	Short: "Deploy an app to digitalocean",
 	Run:   do,
@@ -37,7 +40,15 @@ func do(cmd *cobra.Command, args []string) {
 	}
 	runID := uuid.NewV4()
 
+	dryrun := cmd.LocalFlags().Lookup("dryrun").Value.String()
+	//if err != nil {
+	log.Println("dryrun ", dryrun)
 	for _, action := range actions {
+		dryrun, _ := strconv.ParseBool( cmd.LocalFlags().Lookup("dryrun").Value.String() )
+		//if err != nil {
+			log.Println("dryrun ", dryrun)
+		//}
+		os.Exit(23)
 		(*action).Execute(runID.String())
 	}
 }
