@@ -14,7 +14,7 @@ import (
 var dryRun bool
 
 func init() {
-	deployCmd.LocalFlags().BoolVar(&dryRun, "dryrun", false, "Show what deploy would do instead of actually doing it")
+	deployCmd.Flags().BoolVar(&dryRun, "dryrun", false, "Show what deploy would do instead of actually doing it")
 	rootCmd.AddCommand(deployCmd)
 }
 
@@ -39,15 +39,13 @@ func do(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 	runID := uuid.NewV4()
-
-	//if err != nil {
-	log.Println("dryrun ", dryRun)
 	for _, action := range actions {
-		//if err != nil {
-			log.Println("dryrun ", dryRun)
-		//}
-		os.Exit(23)
-		(*action).Execute(runID.String())
+		if ! dryRun {
+			log.Println("dryrun not set!")
+			(*action).Execute(runID.String())
+		} else {
+			log.Println("dryrun is set so not making any real changes!!")
+		}
 	}
 }
 
