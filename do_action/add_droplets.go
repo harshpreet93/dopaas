@@ -16,17 +16,25 @@ type AddDroplets struct {
 	ImageSlug  string
 }
 
-func generateDropletNames(numDesired int) []string {
+func generateDropletNames(numDesired int, runID string) []string {
 	var names []string
 	for i := 0; i < numDesired; i++ {
-		names = append(names, conf.GetConfig().GetString("project_name")+"--"+(strconv.Itoa(i)))
+		names = append(names, conf.GetConfig().GetString("project_name")+"--"+(strconv.Itoa(i))+"--"+runID)
 	}
 	return names
 }
 
-func (a AddDroplets) Execute() error {
+func (a AddDroplets) Execute(runID string) error {
 	ctx := context.Background()
-	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{Names: generateDropletNames(conf.GetConfig().GetInt("NumDroplets")), Region: a.Region, Size: a.SizeSlug, Image: godo.DropletCreateImage{Slug: a.ImageSlug}}
+	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{
+		Names:  generateDropletNames(a.DesiredNum, runID),
+		Region: a.Region,
+		Size:   a.SizeSlug,
+		Image: godo.DropletCreateImage{
+			Slug: a.ImageSlug,
+		},
+	}
+	log.Println("create request ", dropletMultiCreateRequest)
 	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
 		log.Println("Error adding droplets ", err)

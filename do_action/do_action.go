@@ -1,5 +1,5 @@
 package do_action
 
 type Action interface {
-	Execute() error
+	Execute(runID string) error
 }

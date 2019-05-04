@@ -7,7 +7,7 @@ project_name: "sample-project"
 domain: syneo.io
 lb: true
 SizeSlug: "s-1vcpu-1gb"
-NumDroplets: 3
+NumDroplets: 2
 Region: "sfo2"
 ImageSlug: "ubuntu-18-04-x64"
 key_location: ''
