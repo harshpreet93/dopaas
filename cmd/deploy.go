@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/digitalocean/godo"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_action"
 	"github.com/harshpreet93/dopaas/do_state"
@@ -39,24 +38,28 @@ func do(cmd *cobra.Command, args []string) {
 	runID := uuid.NewV4()
 
 	for _, action := range actions {
-		log.Println("action required ", *action)
 		(*action).Execute(runID.String())
 	}
 }
 
 func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
+	//TODO: Fix a bug, that can be reproduced by trying to downsize from, for instance, 3 to 1 droplet......only one instance is destroyed..
 	var actions []*do_action.Action
 	numDropletsToBeCreated := desiredState.NumDroplets
-	var toBeDestroyed []*godo.Droplet
-	log.Println("num Existing droplets", len(state.Droplets))
 	for _, droplet := range state.Droplets {
-		log.Println("found existing droplet ", droplet.SizeSlug == desiredState.SizeSlug, droplet.Region.Slug == desiredState.Region, droplet.Image.Slug == desiredState.ImageSlug)
+
 		if droplet.SizeSlug == desiredState.SizeSlug &&
 			droplet.Region.Slug == desiredState.Region &&
 			droplet.Image.Slug == desiredState.ImageSlug {
 			numDropletsToBeCreated--
 		} else {
-			toBeDestroyed = append(toBeDestroyed, droplet)
+			var destroy do_action.Action = &do_action.DestroyDropletsAction{DropletID: droplet.ID}
+			actions = append(actions, &destroy)
+		}
+
+		if numDropletsToBeCreated < 0 {
+			var destroy do_action.Action = &do_action.DestroyDropletsAction{DropletID: droplet.ID}
+			actions = append(actions, &destroy)
 		}
 	}
 	if numDropletsToBeCreated > 0 {
