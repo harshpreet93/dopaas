@@ -51,7 +51,6 @@ func getTokenFromFS() string {
 
 func Auth() *godo.Client {
 	pat := getTokenFromFS()
-	log.Println("token is ", pat)
 	tokenSource := &TokenSource{
 		AccessToken: pat,
 	}

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_action"
 	"github.com/harshpreet93/dopaas/do_state"
@@ -32,7 +31,6 @@ func do(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 	desiredState, err := conf.GetDesiredState()
-	fmt.Println(desiredState, currState)
 	actions, err := diff(currState, desiredState)
 	if err != nil {
 		log.Println("Error calculating actions to get to desired state ", err)
@@ -40,7 +38,7 @@ func do(cmd *cobra.Command, args []string) {
 	}
 	runID := uuid.NewV4()
 	for _, action := range actions {
-		if ! dryRun {
+		if !dryRun {
 			log.Println("dryrun not set!")
 			(*action).Execute(runID.String())
 		} else {

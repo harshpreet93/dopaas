@@ -26,8 +26,6 @@ func GetConfig() *viper.Viper {
 		os.Exit(1)
 	}
 	conf.ReadConfig(bytes.NewBuffer(dat))
-	log.Println(dat)
-	log.Println("project ID is ", viper.Get("project_id"))
 	return conf
 }
 

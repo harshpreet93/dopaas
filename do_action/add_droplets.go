@@ -34,7 +34,6 @@ func (a AddDroplets) Execute(runID string) error {
 			Slug: a.ImageSlug,
 		},
 	}
-	log.Println("create request ", dropletMultiCreateRequest)
 	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
 		log.Println("Error adding droplets ", err)
