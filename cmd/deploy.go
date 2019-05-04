@@ -43,7 +43,7 @@ func do(cmd *cobra.Command, args []string) {
 }
 
 func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
-	//TODO: Fix a bug, that can be reproduced by trying to downsize from, for instance, 3 to 1 droplet......only one instance is destroyed..
+	//TODO: Fix a bug, that can be reproduced by trying to downsize from, for instance, 3 to 1 droplet......only one droplet is destroyed..
 	var actions []*do_action.Action
 	numDropletsToBeCreated := desiredState.NumDroplets
 	for _, droplet := range state.Droplets {
