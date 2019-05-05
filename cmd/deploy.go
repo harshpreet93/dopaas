@@ -39,10 +39,9 @@ func do(cmd *cobra.Command, args []string) {
 	runID := uuid.NewV4()
 	for _, action := range actions {
 		if !dryRun {
-			log.Println("dryrun not set!")
 			(*action).Execute(runID.String())
 		} else {
-			log.Println("dryrun is set so not making any real changes!!")
+			(*action).Print(dryRun)
 		}
 	}
 }

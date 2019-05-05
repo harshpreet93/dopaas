@@ -3,9 +3,9 @@ package do_action
 import (
 	"context"
 	"github.com/digitalocean/godo"
+	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_auth"
-	"log"
 	"strconv"
 )
 
@@ -25,6 +25,7 @@ func generateDropletNames(numDesired int, runID string) []string {
 }
 
 func (a AddDroplets) Execute(runID string) error {
+	a.Print(false)
 	ctx := context.Background()
 	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{
 		Names:  generateDropletNames(a.DesiredNum, runID),
@@ -36,7 +37,16 @@ func (a AddDroplets) Execute(runID string) error {
 	}
 	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
-		log.Println("Error adding droplets ", err)
+		color.Red("Error adding droplets ", err)
 	}
 	return nil
+}
+
+func (a AddDroplets) Print(dryRun bool) {
+	prefix := "Creating"
+	if dryRun {
+		prefix = "Would create"
+	}
+	color.Green("+++ "+prefix+" %d droplets in %s with size %s and image %s",
+		a.DesiredNum, a.Region, a.SizeSlug, a.ImageSlug)
 }

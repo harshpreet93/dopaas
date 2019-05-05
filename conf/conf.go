@@ -35,6 +35,5 @@ func GetDesiredState() (*DesiredState, error) {
 	desiredState.Region = GetConfig().GetString("Region")
 	desiredState.ImageSlug = GetConfig().GetString("ImageSlug")
 	desiredState.SizeSlug = GetConfig().GetString("SizeSlug")
-	log.Println("desired state ", desiredState)
 	return desiredState, nil
 }
