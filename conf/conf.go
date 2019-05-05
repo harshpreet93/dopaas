@@ -2,9 +2,9 @@ package conf
 
 import (
 	"bytes"
+	"github.com/harshpreet93/dopaas/error_check"
 	"github.com/spf13/viper"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -21,10 +21,7 @@ func GetConfig() *viper.Viper {
 	conf := viper.New()
 	conf.SetConfigType("yaml")
 	dat, err := ioutil.ReadFile("app.yml")
-	if err != nil {
-		log.Println("error reading yaml config ", err)
-		os.Exit(1)
-	}
+	error_check.ExitOn(err, "error reading yaml config ")
 	conf.ReadConfig(bytes.NewBuffer(dat))
 	return conf
 }

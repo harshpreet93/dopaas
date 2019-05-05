@@ -4,8 +4,7 @@ import (
 	"context"
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/do_auth"
-	"log"
-	"os"
+	"github.com/harshpreet93/dopaas/error_check"
 )
 
 type DestroyDropletsAction struct {
@@ -14,11 +13,8 @@ type DestroyDropletsAction struct {
 
 func (d DestroyDropletsAction) Execute(runID string) error {
 	d.Print(false)
-	response, err := do_auth.Auth().Droplets.Delete(context.Background(), d.DropletID)
-	if err != nil {
-		log.Println("error destroying droplet ", response, err)
-		os.Exit(1)
-	}
+	_, err := do_auth.Auth().Droplets.Delete(context.Background(), d.DropletID)
+	error_check.ExitOn(err, "error destroying droplet ")
 	return nil
 }
 

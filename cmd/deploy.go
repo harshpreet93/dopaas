@@ -4,10 +4,9 @@ import (
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_action"
 	"github.com/harshpreet93/dopaas/do_state"
+	"github.com/harshpreet93/dopaas/error_check"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 var dryRun bool
@@ -26,16 +25,10 @@ var deployCmd = &cobra.Command{
 func do(cmd *cobra.Command, args []string) {
 	projectName := conf.GetConfig().Get("project_name").(string)
 	currState, err := do_state.GetState(projectName)
-	if err != nil {
-		log.Println("Error getting current state. exiting", err)
-		os.Exit(1)
-	}
+	error_check.ExitOn(err, "Error getting current state. exiting")
 	desiredState, err := conf.GetDesiredState()
 	actions, err := diff(currState, desiredState)
-	if err != nil {
-		log.Println("Error calculating actions to get to desired state ", err)
-		os.Exit(1)
-	}
+	error_check.ExitOn(err, "Error calculating actions to get to desired state ")
 	runID := uuid.NewV4()
 	for _, action := range actions {
 		if !dryRun {

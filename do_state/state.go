@@ -4,8 +4,7 @@ import (
 	"context"
 	"github.com/digitalocean/godo"
 	"github.com/harshpreet93/dopaas/do_auth"
-	"log"
-	"os"
+	"github.com/harshpreet93/dopaas/error_check"
 	"strings"
 )
 
@@ -56,10 +55,7 @@ func getAllDroplets(ctx context.Context, client *godo.Client) ([]godo.Droplet, e
 func getDropletsForProject(projectName string) []*godo.Droplet {
 	var currState []*godo.Droplet
 	allDroplets, err := getAllDroplets(context.Background(), do_auth.Auth())
-	if err != nil {
-		log.Println("error getting current project state", err)
-		os.Exit(1)
-	}
+	error_check.ExitOn(err, "error getting current project state")
 	for _, droplet := range allDroplets {
 		if strings.HasPrefix(droplet.Name, projectName) {
 			currState = append(currState, &droplet)
