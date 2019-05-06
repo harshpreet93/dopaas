@@ -19,5 +19,9 @@ func (d DestroyDropletsAction) Execute(runID string) error {
 }
 
 func (d DestroyDropletsAction) Print(dryRun bool) {
-	color.Red("--- Destroying droplet with ID %s", d.DropletID)
+	prefix := "Destroying"
+	if dryRun {
+		prefix = "Would destroy"
+	}
+	color.Red("--- "+prefix+" droplet with ID %s", d.DropletID)
 }

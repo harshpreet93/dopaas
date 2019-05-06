@@ -9,7 +9,7 @@ import (
 )
 
 type ProjectState struct {
-	Droplets []*godo.Droplet
+	Droplets []godo.Droplet
 }
 
 func GetState(projectName string) (*ProjectState, error) {
@@ -52,13 +52,13 @@ func getAllDroplets(ctx context.Context, client *godo.Client) ([]godo.Droplet, e
 	return list, nil
 }
 
-func getDropletsForProject(projectName string) []*godo.Droplet {
-	var currState []*godo.Droplet
+func getDropletsForProject(projectName string) []godo.Droplet {
+	var currState []godo.Droplet
 	allDroplets, err := getAllDroplets(context.Background(), do_auth.Auth())
 	error_check.ExitOn(err, "error getting current project state")
 	for _, droplet := range allDroplets {
 		if strings.HasPrefix(droplet.Name, projectName) {
-			currState = append(currState, &droplet)
+			currState = append(currState, droplet)
 		}
 	}
 	return currState
