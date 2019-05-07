@@ -39,17 +39,12 @@ func (a AddDroplets) Execute(runID string) error {
 	error_check.ExitOn(err, "error getting pub key in ~/.ssh/id_rsa.pub")
 	sshPubKeyContents, err := ioutil.ReadFile(sshPubKeyFile)
 	error_check.ExitOn(err, "Error getting pub key file contents")
-	log.Println("pubKeyContents ", string( sshPubKeyContents ))
-
 	userData := `#!/bin/bash
-				mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys
-				chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
-				echo {{.pubKey}} >> ~/.ssh/authorized_keys
-				echo PasswordAuthentication no >> /etc/ssh/sshd_config
-				systemctl restart ssh
-				# add key
-				# create ssh user
-				# create app user`
+				 mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys
+				 chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
+				 echo {{.pubKey}} >> ~/.ssh/authorized_keys
+				 echo PasswordAuthentication no >> /etc/ssh/sshd_config
+				 systemctl restart ssh`
 
 	tmpl, err := template.New("userdata").Parse(userData)
 	error_check.ExitOn(err, "error creating userdata template")
@@ -58,7 +53,7 @@ func (a AddDroplets) Execute(runID string) error {
 	}
 
 	compiledUserData := &bytes.Buffer{}
-	err = tmpl.Execute(compiledUserData,tmplVars)
+	err = tmpl.Execute(compiledUserData, tmplVars)
 	error_check.ExitOn(err, "error compiling userdata template")
 	log.Println("compiled user data is ", compiledUserData.String())
 	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{
