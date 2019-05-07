@@ -27,6 +27,12 @@ func generateDropletNames(numDesired int, runID string) []string {
 func (a AddDroplets) Execute(runID string) error {
 	a.Print(false)
 	ctx := context.Background()
+
+	userData := `#!/bin/sh
+				# add key
+				# create ssh user
+				# create app user`
+
 	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{
 		Names:  generateDropletNames(a.DesiredNum, runID),
 		Region: a.Region,
@@ -34,6 +40,8 @@ func (a AddDroplets) Execute(runID string) error {
 		Image: godo.DropletCreateImage{
 			Slug: a.ImageSlug,
 		},
+		Monitoring: true,
+		UserData: userData,
 	}
 	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
