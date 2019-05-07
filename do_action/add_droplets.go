@@ -3,6 +3,7 @@ package do_action
 import (
 	"bytes"
 	"context"
+	"crypto/rsa"
 	"github.com/digitalocean/godo"
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
@@ -55,6 +56,7 @@ func (a AddDroplets) Execute(runID string) error {
 	tmplVars := template.FuncMap{
 		"pubKey": strings.TrimSpace(string(sshPubKeyContents)),
 	}
+
 	compiledUserData := &bytes.Buffer{}
 	err = tmpl.Execute(compiledUserData,tmplVars)
 	error_check.ExitOn(err, "error compiling userdata template")

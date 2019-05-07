@@ -63,3 +63,34 @@ func getDropletsForProject(projectName string) []godo.Droplet {
 	}
 	return currState
 }
+
+func getKeysForProject(ctx context.Context, client *godo.Client) ([]godo.Key, error) {
+	var list []godo.Key
+	opt := &godo.ListOptions{}
+	for {
+		keys, resp, err := client.Keys.List(ctx, opt)
+		if err != nil {
+			return nil, err
+		}
+
+		// append the current page's droplets to our list
+		for _, d := range keys {
+			list = append(list, d)
+		}
+
+		// if we are at the last page, break out the for loop
+		if resp.Links == nil || resp.Links.IsLastPage() {
+			break
+		}
+
+		page, err := resp.Links.CurrentPage()
+		if err != nil {
+			return nil, err
+		}
+
+		// set the page we want for the next request
+		opt.Page = page + 1
+	}
+
+	return list, nil
+}
