@@ -40,10 +40,12 @@ func (a AddDroplets) Execute(runID string) error {
 	error_check.ExitOn(err, "Error getting pub key file contents")
 	log.Println("pubKeyContents ", string( sshPubKeyContents ))
 
-	userData := `#!/bin/sh
+	userData := `#!/bin/bash
 				mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys
 				chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
 				echo {{.pubKey}} >> ~/.ssh/authorized_keys
+				echo PasswordAuthentication no >> /etc/ssh/sshd_config
+				systemctl restart ssh
 				# add key
 				# create ssh user
 				# create app user`
