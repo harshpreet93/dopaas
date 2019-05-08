@@ -3,7 +3,6 @@ package do_action
 import (
 	"bytes"
 	"context"
-	"crypto/rsa"
 	"github.com/digitalocean/godo"
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
