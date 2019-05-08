@@ -5,6 +5,7 @@ import (
 	"github.com/harshpreet93/dopaas/do_action"
 	"github.com/harshpreet93/dopaas/do_state"
 	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/predeploy"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 )
@@ -26,6 +27,7 @@ func do(cmd *cobra.Command, args []string) {
 	projectName := conf.GetConfig().Get("project_name").(string)
 	currState, err := do_state.GetState(projectName)
 	error_check.ExitOn(err, "Error getting current state. exiting")
+	predeploy.Execute()
 	desiredState, err := conf.GetDesiredState()
 	actions, err := diff(currState, desiredState)
 	error_check.ExitOn(err, "Error calculating actions to get to desired state ")
