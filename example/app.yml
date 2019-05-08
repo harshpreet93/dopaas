@@ -1,11 +1,12 @@
 test: []
-build: ["", "", ""]
+pre_deploy: "env GOOS=linux GOARCH=amd64 go build -o sample ."
+artifact_location: "./sample"
+start: ["./sample"]
 project_name: "sample-project"
 domain: "syneo.io"
 lb: true
 SizeSlug: "s-1vcpu-1gb"
-NumDroplets: 1
+NumDroplets: 0
 Region: "sfo2"
 ImageSlug: "ubuntu-18-04-x64"
 key_location: ''
-start: [""]
