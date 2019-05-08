@@ -1,12 +1,12 @@
-package do_action
+package doaction
 
 import (
 	"context"
 	"github.com/digitalocean/godo"
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
-	"github.com/harshpreet93/dopaas/do_auth"
-	"github.com/harshpreet93/dopaas/key_util"
+	"github.com/harshpreet93/dopaas/doauth"
+	"github.com/harshpreet93/dopaas/keyutil"
 	"github.com/harshpreet93/dopaas/userdata"
 	"strconv"
 )
@@ -37,10 +37,10 @@ func (a AddDroplets) Execute(runID string) error {
 			Slug: a.ImageSlug,
 		},
 		Monitoring: true,
-		SSHKeys:    []godo.DropletCreateSSHKey{{Fingerprint: key_util.GetPubKeySignature()}},
+		SSHKeys:    []godo.DropletCreateSSHKey{{Fingerprint: keyutil.GetPubKeySignature()}},
 		UserData:   userdata.Generate(),
 	}
-	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
+	_, _, err := doauth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
 		color.Red("Error adding droplets ", err)
 	}

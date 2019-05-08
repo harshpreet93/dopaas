@@ -1,10 +1,10 @@
-package do_auth
+package doauth
 
 import (
 	"bytes"
 	"context"
 	"github.com/digitalocean/godo"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
@@ -41,7 +41,7 @@ func getTokenFromFS() string {
 	// DIGITALOCEAN_ACCESS_TOKEN: "blahhhh"
 
 	dopaasConf, err := homedir.Expand("~/.dopaas.yaml")
-	error_check.ExitOn(err, "error getting dopaas file")
+	errorcheck.ExitOn(err, "error getting dopaas file")
 	return getFieldFromFile(dopaasConf, "DIGITALOCEAN_ACCESS_TOKEN")
 }
 

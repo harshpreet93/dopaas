@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/harshpreet93/dopaas/conf"
-	"github.com/harshpreet93/dopaas/do_action"
-	"github.com/harshpreet93/dopaas/do_state"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/doaction"
+	"github.com/harshpreet93/dopaas/dostate"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/harshpreet93/dopaas/predeploy"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
@@ -25,12 +25,12 @@ var deployCmd = &cobra.Command{
 
 func do(cmd *cobra.Command, args []string) {
 	projectName := conf.GetConfig().Get("project_name").(string)
-	currState, err := do_state.GetState(projectName)
-	error_check.ExitOn(err, "Error getting current state. exiting")
+	currState, err := dostate.GetState(projectName)
+	errorcheck.ExitOn(err, "Error getting current state. exiting")
 	predeploy.Execute()
 	desiredState, err := conf.GetDesiredState()
 	actions, err := diff(currState, desiredState)
-	error_check.ExitOn(err, "Error calculating actions to get to desired state ")
+	errorcheck.ExitOn(err, "Error calculating actions to get to desired state ")
 	runID := uuid.NewV4()
 	for _, action := range actions {
 		if !dryRun {
@@ -41,8 +41,8 @@ func do(cmd *cobra.Command, args []string) {
 	}
 }
 
-func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_action.Action, error) {
-	var actions []*do_action.Action
+func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doaction.Action, error) {
+	var actions []*doaction.Action
 	numDropletsToBeCreated := desiredState.NumDroplets
 	for _, droplet := range state.Droplets {
 		if droplet.SizeSlug == desiredState.SizeSlug &&
@@ -50,17 +50,17 @@ func diff(state *do_state.ProjectState, desiredState *conf.DesiredState) ([]*do_
 			droplet.Image.Slug == desiredState.ImageSlug {
 			numDropletsToBeCreated--
 		} else {
-			var destroy do_action.Action = &do_action.DestroyDropletsAction{DropletID: droplet.ID}
+			var destroy doaction.Action = &doaction.DestroyDropletsAction{DropletID: droplet.ID}
 			actions = append(actions, &destroy)
 		}
 
 		if numDropletsToBeCreated < 0 {
-			var destroy do_action.Action = &do_action.DestroyDropletsAction{DropletID: droplet.ID}
+			var destroy doaction.Action = &doaction.DestroyDropletsAction{DropletID: droplet.ID}
 			actions = append(actions, &destroy)
 		}
 	}
 	if numDropletsToBeCreated > 0 {
-		var add do_action.Action = &do_action.AddDroplets{
+		var add doaction.Action = &doaction.AddDroplets{
 			DesiredNum: numDropletsToBeCreated,
 			ImageSlug:  conf.GetConfig().GetString("ImageSlug"),
 			SizeSlug:   conf.GetConfig().GetString("SizeSlug"),

@@ -1,10 +1,10 @@
-package do_state
+package dostate
 
 import (
 	"context"
 	"github.com/digitalocean/godo"
-	"github.com/harshpreet93/dopaas/do_auth"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/doauth"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"strings"
 )
 
@@ -55,8 +55,8 @@ func getAllDroplets(ctx context.Context, client *godo.Client) ([]godo.Droplet, e
 
 func getDropletsForProject(projectName string) []godo.Droplet {
 	var currState []godo.Droplet
-	allDroplets, err := getAllDroplets(context.Background(), do_auth.Auth())
-	error_check.ExitOn(err, "error getting current project state")
+	allDroplets, err := getAllDroplets(context.Background(), doauth.Auth())
+	errorcheck.ExitOn(err, "error getting current project state")
 	for _, droplet := range allDroplets {
 		if strings.HasPrefix(droplet.Name, projectName) {
 			currState = append(currState, droplet)
@@ -69,7 +69,7 @@ func getKeyForProject(ctx context.Context, client *godo.Client, projectName stri
 	opt := &godo.ListOptions{}
 	for {
 		keys, resp, err := client.Keys.List(ctx, opt)
-		error_check.ExitOn(err, "error listing do keys")
+		errorcheck.ExitOn(err, "error listing do keys")
 
 		// append the current page's droplets to our list
 		for _, key := range keys {
@@ -84,7 +84,7 @@ func getKeyForProject(ctx context.Context, client *godo.Client, projectName stri
 		}
 
 		page, err := resp.Links.CurrentPage()
-		error_check.ExitOn(err, "err")
+		errorcheck.ExitOn(err, "err")
 
 		// set the page we want for the next request
 		opt.Page = page + 1

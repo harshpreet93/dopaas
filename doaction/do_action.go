@@ -1,4 +1,4 @@
-package do_action
+package doaction
 
 type Action interface {
 	Execute(runID string) error

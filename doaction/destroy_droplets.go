@@ -1,10 +1,10 @@
-package do_action
+package doaction
 
 import (
 	"context"
 	"github.com/fatih/color"
-	"github.com/harshpreet93/dopaas/do_auth"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/doauth"
+	"github.com/harshpreet93/dopaas/errorcheck"
 )
 
 type DestroyDropletsAction struct {
@@ -13,8 +13,8 @@ type DestroyDropletsAction struct {
 
 func (d DestroyDropletsAction) Execute(runID string) error {
 	d.Print(false)
-	_, err := do_auth.Auth().Droplets.Delete(context.Background(), d.DropletID)
-	error_check.ExitOn(err, "error destroying droplet ")
+	_, err := doauth.Auth().Droplets.Delete(context.Background(), d.DropletID)
+	errorcheck.ExitOn(err, "error destroying droplet ")
 	return nil
 }
 

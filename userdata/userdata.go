@@ -2,7 +2,7 @@ package userdata
 
 import (
 	"bytes"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"text/template"
 )
 
@@ -11,10 +11,10 @@ func Generate() string {
 				
 				`
 	tmpl, err := template.New("userdata").Parse(userData)
-	error_check.ExitOn(err, "error creating userdata template")
+	errorcheck.ExitOn(err, "error creating userdata template")
 	tmplVars := template.FuncMap{}
 	compiledUserData := &bytes.Buffer{}
 	err = tmpl.Execute(compiledUserData, tmplVars)
-	error_check.ExitOn(err, "error compiling userdata template")
+	errorcheck.ExitOn(err, "error compiling userdata template")
 	return compiledUserData.String()
 }

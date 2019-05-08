@@ -2,7 +2,7 @@ package predeploy
 
 import (
 	"github.com/harshpreet93/dopaas/conf"
-	"github.com/harshpreet93/dopaas/error_check"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"os"
 	"os/exec"
 )
@@ -12,5 +12,5 @@ func Execute() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
-	error_check.ExitOn(err, "error executing prebuild step")
+	errorcheck.ExitOn(err, "error executing prebuild step")
 }
