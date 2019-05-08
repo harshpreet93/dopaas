@@ -1,19 +1,14 @@
 package do_action
 
 import (
-	"bytes"
 	"context"
 	"github.com/digitalocean/godo"
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/do_auth"
-	"github.com/harshpreet93/dopaas/error_check"
-	"github.com/mitchellh/go-homedir"
-	"io/ioutil"
-	"log"
+	"github.com/harshpreet93/dopaas/key_util"
+	"github.com/harshpreet93/dopaas/userdata"
 	"strconv"
-	"strings"
-	"text/template"
 )
 
 type AddDroplets struct {
@@ -34,27 +29,6 @@ func generateDropletNames(numDesired int, runID string) []string {
 func (a AddDroplets) Execute(runID string) error {
 	a.Print(false)
 	ctx := context.Background()
-	sshPubKeyFile, err := homedir.Expand("~/.ssh/id_rsa.pub")
-	error_check.ExitOn(err, "error getting pub key in ~/.ssh/id_rsa.pub")
-	sshPubKeyContents, err := ioutil.ReadFile(sshPubKeyFile)
-	error_check.ExitOn(err, "Error getting pub key file contents")
-	userData := `#!/bin/bash
-				 mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys
-				 chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
-				 echo {{.pubKey}} >> ~/.ssh/authorized_keys
-				 echo PasswordAuthentication no >> /etc/ssh/sshd_config
-				 systemctl restart ssh`
-
-	tmpl, err := template.New("userdata").Parse(userData)
-	error_check.ExitOn(err, "error creating userdata template")
-	tmplVars := template.FuncMap{
-		"pubKey": strings.TrimSpace(string(sshPubKeyContents)),
-	}
-
-	compiledUserData := &bytes.Buffer{}
-	err = tmpl.Execute(compiledUserData, tmplVars)
-	error_check.ExitOn(err, "error compiling userdata template")
-	log.Println("compiled user data is ", compiledUserData.String())
 	dropletMultiCreateRequest := &godo.DropletMultiCreateRequest{
 		Names:  generateDropletNames(a.DesiredNum, runID),
 		Region: a.Region,
@@ -63,9 +37,10 @@ func (a AddDroplets) Execute(runID string) error {
 			Slug: a.ImageSlug,
 		},
 		Monitoring: true,
-		UserData:   compiledUserData.String(),
+		SSHKeys:    []godo.DropletCreateSSHKey{{Fingerprint: key_util.GetPubKeySignature()}},
+		UserData:   userdata.Generate(),
 	}
-	_, _, err = do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
+	_, _, err := do_auth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
 		color.Red("Error adding droplets ", err)
 	}

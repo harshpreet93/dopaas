@@ -11,12 +11,12 @@ import (
 	"strings"
 )
 
-func GetPubKeySignature() (string, error) {
+func GetPubKeySignature() string {
 	sshPubKeyFile, err := homedir.Expand("~/.ssh/id_rsa.pub")
 	error_check.ExitOn(err, "error getting pub key in ~/.ssh/id_rsa.pub")
 	sshPubKeyContents, err := ioutil.ReadFile(sshPubKeyFile)
 	error_check.ExitOn(err, "Error getting pub key file contents")
-	log.Println("pubKey is ", string( sshPubKeyContents))
+	log.Println("pubKey is ", string(sshPubKeyContents))
 	parts := strings.Fields(string(sshPubKeyContents))
 	if len(parts) < 2 {
 		log.Fatal("bad key")
@@ -31,5 +31,5 @@ func GetPubKeySignature() (string, error) {
 			str = str + ":"
 		}
 	}
-	return str, nil
+	return str
 }
