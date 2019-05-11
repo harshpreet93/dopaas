@@ -5,7 +5,6 @@ import (
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/spf13/viper"
 	"io/ioutil"
-	"os"
 )
 
 type DesiredState struct {
@@ -17,7 +16,6 @@ type DesiredState struct {
 
 // marshal config file into a struct here
 func GetConfig() *viper.Viper {
-	os.Getwd()
 	conf := viper.New()
 	conf.SetConfigType("yaml")
 	dat, err := ioutil.ReadFile("app.yml")

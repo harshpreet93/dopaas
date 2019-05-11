@@ -1,5 +1,7 @@
 test: []
-pre_deploy: "env GOOS=linux GOARCH=amd64 go build -o sample ."
+pre_deploy_var_GOOS: "linux"
+pre_deploy_var_GOARCH: "amd64"
+pre_deploy: "./predeploy.sh"
 artifact_location: "./sample"
 start: ["./sample"]
 project_name: "sample-project"
