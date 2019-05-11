@@ -46,7 +46,7 @@ func (a AddDroplets) Execute(runID string) error {
 	}
 	for _, droplet := range droplets {
 		err = Transport{
-			ID: droplet.ID,
+			ID:           droplet.ID,
 			ArtifactFile: conf.GetConfig().GetString("artifact_file"),
 		}.Execute(runID)
 		if err != nil {

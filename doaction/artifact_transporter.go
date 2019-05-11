@@ -12,7 +12,7 @@ import (
 )
 
 type Transport struct {
-	ID int
+	ID           int
 	ArtifactFile string
 }
 
@@ -20,11 +20,10 @@ func (t Transport) Execute(runID string) error {
 	return t.try()
 }
 
-
 func (t Transport) try() error {
 	var err error = nil
-	for i:=0; i < 5; i++ {
-		log.Println("Trying to transfer file to ", t.ID )
+	for i := 0; i < 5; i++ {
+		log.Println("Trying to transfer file to ", t.ID)
 		IP, err := t.tryToGetIPForId(t.ID)
 		if err != nil {
 			time.Sleep(10000)

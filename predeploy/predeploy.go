@@ -19,7 +19,7 @@ func Execute() {
 	verifyArtifactExistence()
 }
 
-func setPredeployVars()  {
+func setPredeployVars() {
 	for _, key := range conf.GetConfig().AllKeys() {
 		if strings.HasPrefix(key, "pre_deploy_var_") {
 			os.Setenv(strings.TrimPrefix(key, "pre_deploy_var_"), conf.GetConfig().GetString(key))
@@ -27,8 +27,8 @@ func setPredeployVars()  {
 	}
 }
 
-func verifyArtifactExistence()  {
-	finfo, err:= os.Stat(conf.GetConfig().GetString("artifact_file"))
+func verifyArtifactExistence() {
+	finfo, err := os.Stat(conf.GetConfig().GetString("artifact_file"))
 	errorcheck.ExitOn(err, "error checking for artifact file existence")
 	log.Println("artifact info ", finfo)
 }
