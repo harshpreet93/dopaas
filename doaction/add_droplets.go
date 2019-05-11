@@ -40,9 +40,18 @@ func (a AddDroplets) Execute(runID string) error {
 		SSHKeys:    []godo.DropletCreateSSHKey{{Fingerprint: keyutil.GetPubKeySignature()}},
 		UserData:   userdata.Generate(),
 	}
-	_, _, err := doauth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
+	droplets, _, err := doauth.Auth().Droplets.CreateMultiple(ctx, dropletMultiCreateRequest)
 	if err != nil {
 		color.Red("Error adding droplets ", err)
+	}
+	for _, droplet := range droplets {
+		err = Transport{
+			ID: droplet.ID,
+			ArtifactFile: conf.GetConfig().GetString("artifact_file"),
+		}.Execute(runID)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

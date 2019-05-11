@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-go build -o sample .
+env GOOS=linux GOARCH=amd64 go build -o sample .
