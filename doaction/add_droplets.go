@@ -49,6 +49,15 @@ func (a AddDroplets) Execute(runID string) error {
 			ID:           droplet.ID,
 			ArtifactFile: conf.GetConfig().GetString("artifact_file"),
 		}.Execute(runID)
+
+		if err != nil {
+			return err
+		}
+
+		err = Starter{
+			ID: droplet.ID,
+		}.Execute(runID)
+
 		if err != nil {
 			return err
 		}

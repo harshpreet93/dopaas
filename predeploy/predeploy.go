@@ -3,7 +3,6 @@ package predeploy
 import (
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/errorcheck"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -28,7 +27,6 @@ func setPredeployVars() {
 }
 
 func verifyArtifactExistence() {
-	finfo, err := os.Stat(conf.GetConfig().GetString("artifact_file"))
+	_, err := os.Stat(conf.GetConfig().GetString("artifact_file"))
 	errorcheck.ExitOn(err, "error checking for artifact file existence")
-	log.Println("artifact info ", finfo)
 }

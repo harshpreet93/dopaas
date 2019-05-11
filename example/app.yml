@@ -1,9 +1,6 @@
-test: []
-pre_deploy_var_GOOS: "linux"
-pre_deploy_var_GOARCH: "amd64"
 pre_deploy: "./predeploy.sh"
 artifact_file: "./sample"
-start: ["./sample"]
+start: "nohup ./sample &>/dev/null &"
 project_name: "sample-project"
 domain: "syneo.io"
 lb: true
@@ -11,4 +8,3 @@ SizeSlug: "s-1vcpu-1gb"
 NumDroplets: 1
 Region: "sfo2"
 ImageSlug: "ubuntu-18-04-x64"
-key_location: ''
