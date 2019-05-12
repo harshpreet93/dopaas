@@ -8,6 +8,8 @@ import (
 	"github.com/harshpreet93/dopaas/predeploy"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
+	"log"
+	"strings"
 )
 
 var dryRun bool
@@ -68,6 +70,25 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 		}
 		actions = append(actions, &add)
 	}
-
+	// TODO: some droplets might have an outdated version of the artifact and might need to be updated and retagged
+	for _, droplet := range state.Droplets {
+		for _, tag := range droplet.Tags {
+			if strings.HasPrefix(tag, "artifact_rev_") {
+				currRev := strings.TrimPrefix(tag, "artifact_rev_")
+				if currRev != doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")) {
+					log.Println("droplet ", droplet.ID, " has an outdated rev ")
+				}
+			}
+		}
+	}
 	return actions, nil
+}
+
+func contains(a []string, x string) bool {
+	for _, n := range a {
+		if x == n {
+			return true
+		}
+	}
+	return false
 }

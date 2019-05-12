@@ -8,7 +8,7 @@ import (
 
 type Tagger struct {
 	DropletId int
-	Tag string
+	Tag       string
 }
 
 func (a Tagger) Execute(runID string) error {

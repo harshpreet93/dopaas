@@ -65,7 +65,7 @@ func (a AddDroplets) Execute(runID string) error {
 
 		err = Tagger{
 			DropletId: droplet.ID,
-			Tag: GetFileSha(conf.GetConfig().GetString("artifact_file")),
+			Tag:       "artifact_rev_" + GetFileSha(conf.GetConfig().GetString("artifact_file")),
 		}.Execute(runID)
 		errorcheck.ExitOn(err, "error tagging droplet")
 	}
