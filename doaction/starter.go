@@ -2,7 +2,6 @@ package doaction
 
 import (
 	"context"
-	"fmt"
 	"github.com/digitalocean/godo"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/doauth"
@@ -17,9 +16,15 @@ type Starter struct {
 }
 
 func (a Starter) Execute(runID string) error {
-	//ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	//defer cancel()
-	return a.executeWithTimeout( runID)
+	done := make(chan error)
+	go a.executeWithTimeout(runID, done)
+	select {
+	case err := <-done:
+		return err
+	case <-time.After(30 * time.Second):
+	}
+	close(done)
+	return nil
 }
 
 func tryToGetIPForId(ID int) (string, error) {
@@ -39,32 +44,18 @@ func tryToGetIPForId(ID int) (string, error) {
 		}
 		log.Printf("found IP %s for ID %d", IP, ID)
 		return IP, nil
-
 	}
 	return "", err
 }
 
-func (a Starter) executeWithTimeout(runID string) error {
-
-	d := time.Now().Add(30 * time.Second)
-	ctx, cancel := context.WithDeadline(context.Background(), d)
-
-	defer cancel()
-
-	select {
-		case <-ctx.Done(): cancel()
-	}
-
+func (a Starter) executeWithTimeout(runID string, done chan error) {
 	ip, err := tryToGetIPForId(a.ID)
 	errorcheck.ExitOn(err, "Error getting IP for droplet id")
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
-	if err != nil {
-		panic(err)
-	}
+	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
-
 	output, err := client.Exec("cd /root && " + conf.GetConfig().GetString("start"))
 	log.Println("start script output", output)
-	client.Close()
-	return err
+	done <- err
+	close(done)
 }

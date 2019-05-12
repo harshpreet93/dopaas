@@ -16,7 +16,6 @@ func GetPubKeySignature() string {
 	errorcheck.ExitOn(err, "error getting pub key in ~/.ssh/id_rsa.pub")
 	sshPubKeyContents, err := ioutil.ReadFile(sshPubKeyFile)
 	errorcheck.ExitOn(err, "Error getting pub key file contents")
-	log.Println("pubKey is ", string(sshPubKeyContents))
 	parts := strings.Fields(string(sshPubKeyContents))
 	if len(parts) < 2 {
 		log.Fatal("bad key")
