@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/doauth"
+	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/harshpreet93/dopaas/keyutil"
 	"github.com/harshpreet93/dopaas/userdata"
 	"strconv"
@@ -61,6 +62,12 @@ func (a AddDroplets) Execute(runID string) error {
 		if err != nil {
 			return err
 		}
+
+		err = Tagger{
+			DropletId: droplet.ID,
+			Tag: GetFileSha(conf.GetConfig().GetString("artifact_file")),
+		}.Execute(runID)
+		errorcheck.ExitOn(err, "error tagging droplet")
 	}
 	return nil
 }

@@ -23,7 +23,6 @@ func (t Transport) Execute(runID string) error {
 func (t Transport) try() error {
 	var err error = nil
 	for i := 0; i < 5; i++ {
-		log.Println("Trying to transfer file to ", t.ID)
 		IP, err := t.tryToGetIPForId(t.ID)
 		if err != nil {
 			time.Sleep(10000)
@@ -63,7 +62,6 @@ func (t Transport) tryToGetIPForId(ID int) (string, error) {
 			time.Sleep(10000)
 			continue
 		}
-		log.Printf("found IP %s for ID %d", IP, ID)
 		return IP, nil
 
 	}
