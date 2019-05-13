@@ -19,10 +19,10 @@ func (a Tagger) Execute(runID string) error {
 			{ID: string(a.DropletId), Type: godo.DropletResourceType},
 		},
 	}
-	_, _, err := client.Tags.Create(ctx, &godo.TagCreateRequest{Name: a.Tag})
+	do_tag, _, err := client.Tags.Create(ctx, &godo.TagCreateRequest{Name: a.Tag})
 	if err != nil {
 		return err
 	}
-	_, err = client.Tags.TagResources(ctx, a.Tag, tagRequest)
+	_, err = client.Tags.TagResources(ctx, do_tag.Name, tagRequest)
 	return err
 }

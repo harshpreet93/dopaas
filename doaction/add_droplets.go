@@ -68,6 +68,11 @@ func (a AddDroplets) Execute(runID string) error {
 			Tag:       "artifact_rev_" + GetFileSha(conf.GetConfig().GetString("artifact_file")),
 		}.Execute(runID)
 		errorcheck.ExitOn(err, "error tagging droplet")
+
+		err = DropletMarker{
+			ID: droplet.ID,
+
+		}.Execute(runID)
 	}
 	return nil
 }
