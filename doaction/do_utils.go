@@ -27,4 +27,3 @@ func tryToGetIPForId(ID int) (string, error) {
 	}
 	return "", err
 }
-

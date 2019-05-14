@@ -9,7 +9,6 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"log"
-	"strings"
 )
 
 var dryRun bool
@@ -46,6 +45,7 @@ func do(cmd *cobra.Command, args []string) {
 func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doaction.Action, error) {
 	var actions []*doaction.Action
 	numDropletsToBeCreated := desiredState.NumDroplets
+	var dropletsToBeDestroyed = []int{}
 	for _, droplet := range state.Droplets {
 		if droplet.SizeSlug == desiredState.SizeSlug &&
 			droplet.Region.Slug == desiredState.Region &&
@@ -54,11 +54,13 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 		} else {
 			var destroy doaction.Action = &doaction.DestroyDropletsAction{DropletID: droplet.ID}
 			actions = append(actions, &destroy)
+			dropletsToBeDestroyed = append(dropletsToBeDestroyed, droplet.ID)
 		}
 
 		if numDropletsToBeCreated < 0 {
 			var destroy doaction.Action = &doaction.DestroyDropletsAction{DropletID: droplet.ID}
 			actions = append(actions, &destroy)
+			dropletsToBeDestroyed = append(dropletsToBeDestroyed, droplet.ID)
 		}
 	}
 	if numDropletsToBeCreated > 0 {
@@ -72,19 +74,17 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 	}
 	// TODO: some droplets might have an outdated version of the artifact and might need to be updated and retagged
 	for _, droplet := range state.Droplets {
-		for _, tag := range droplet.Tags {
-			if strings.HasPrefix(tag, "artifact_rev_") {
-				currRev := strings.TrimPrefix(tag, "artifact_rev_")
-				if currRev != doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")) {
-					log.Println("droplet ", droplet.ID, " has an outdated rev ")
-				}
-			}
+		if !contains(dropletsToBeDestroyed, droplet.ID) &&
+			doaction.GetDropletArtifactSha(droplet.ID) != doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")) {
+			log.Println("droplet needs new version of artifact ", droplet.ID)
 		}
+		log.Printf("current sha on %s is %s", string(droplet.ID), doaction.GetDropletArtifactSha(droplet.ID))
+
 	}
 	return actions, nil
 }
 
-func contains(a []string, x string) bool {
+func contains(a []int, x int) bool {
 	for _, n := range a {
 		if x == n {
 			return true

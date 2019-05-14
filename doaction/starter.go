@@ -4,7 +4,6 @@ import (
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/sfreiberg/simplessh"
-	"log"
 	"time"
 )
 
@@ -30,8 +29,7 @@ func (a Starter) executeWithTimeout(runID string, done chan error) {
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
 	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
-	output, err := client.Exec("cd /root && " + conf.GetConfig().GetString("start"))
-	log.Println("start script output", output)
+	_, err = client.Exec("cd /root && " + conf.GetConfig().GetString("start"))
 	done <- err
 	close(done)
 }

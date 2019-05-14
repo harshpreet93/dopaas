@@ -9,8 +9,8 @@ import (
 
 type DropletMarker struct {
 	dropletID int
-	Filename string
-	Info string
+	Filename  string
+	Info      string
 }
 
 func (d DropletMarker) Execute(runID string) error {
@@ -32,7 +32,7 @@ func (d DropletMarker) executeWithTimeout(runID string, done chan error) {
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
 	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
-	output, err := client.Exec("echo "+d.Info+" > "+d.Filename)
+	output, err := client.Exec("echo " + d.Info + " > " + d.Filename)
 	log.Println("marker script output", output)
 	done <- err
 	close(done)

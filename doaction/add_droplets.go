@@ -71,8 +71,8 @@ func (a AddDroplets) Execute(runID string) error {
 
 		err = DropletMarker{
 			dropletID: droplet.ID,
-			Info: GetFileSha(conf.GetConfig().GetString("artifact_file")),
-			Filename: "/root/artifact_sha",
+			Info:      GetFileSha(conf.GetConfig().GetString("artifact_file")),
+			Filename:  "/root/artifact_sha",
 		}.Execute(runID)
 		errorcheck.ExitOn(err, "error marking droplet with sha")
 	}
