@@ -33,6 +33,7 @@ func (a Starter) executeWithTimeout(runID string, done chan error) {
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
 	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
+	_, _ = client.Exec("kill -9 $(lsof -t -i:8080)")
 	_, err = client.Exec("cd /root && " + conf.GetConfig().GetString("start"))
 	done <- err
 	close(done)
