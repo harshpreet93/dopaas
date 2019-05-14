@@ -1,18 +1,39 @@
 package doaction
 
 import (
-	"context"
-	"github.com/digitalocean/godo"
-	"github.com/harshpreet93/dopaas/doauth"
+	"github.com/harshpreet93/dopaas/errorcheck"
+	"github.com/sfreiberg/simplessh"
+	"log"
 	"time"
 )
 
 type DropletMarker struct {
 	dropletID int
-	filename string
-	info string
+	Filename string
+	Info string
 }
 
 func (d DropletMarker) Execute(runID string) error {
+	done := make(chan error)
+	go d.executeWithTimeout(runID, done)
+	select {
+	case err := <-done:
+		return err
+	case <-time.After(30 * time.Second):
+	}
+	close(done)
+	return nil
 
+}
+
+func (d DropletMarker) executeWithTimeout(runID string, done chan error) {
+	ip, err := tryToGetIPForId(d.dropletID)
+	errorcheck.ExitOn(err, "Error getting IP for droplet id")
+	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
+	errorcheck.ExitOn(err, "error establishing connection to "+ip)
+	defer client.Close()
+	output, err := client.Exec("echo "+d.Info+" > "+d.Filename)
+	log.Println("marker script output", output)
+	done <- err
+	close(done)
 }
