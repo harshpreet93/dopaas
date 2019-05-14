@@ -3,7 +3,6 @@ package doaction
 import (
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/sfreiberg/simplessh"
-	"log"
 	"time"
 )
 
@@ -36,8 +35,7 @@ func (d DropletMarker) executeWithTimeout(runID string, done chan error) {
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
 	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
-	output, err := client.Exec("echo " + d.Info + " > " + d.Filename)
-	log.Println("marker script output", output)
+	_, err = client.Exec("set -eo pipefail; echo " + d.Info + " > " + d.Filename)
 	done <- err
 	close(done)
 }

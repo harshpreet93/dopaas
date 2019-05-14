@@ -73,12 +73,11 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 		}
 		actions = append(actions, &add)
 	}
-	// TODO: some droplets might have an outdated version of the artifact and might need to be updated and retagged
 	for _, droplet := range state.Droplets {
 		if !contains(dropletsToBeDestroyed, droplet.ID) &&
 			strings.TrimSpace(doaction.GetDropletArtifactSha(droplet.ID)) !=
-			strings.TrimSpace( doaction.GetFileSha(conf.GetConfig().GetString("artifact_file"))) {
-			var transport doaction.Action = doaction.Action( &doaction.Transport{
+				strings.TrimSpace(doaction.GetFileSha(conf.GetConfig().GetString("artifact_file"))) {
+			var transport doaction.Action = doaction.Action(&doaction.Transport{
 				ID:           droplet.ID,
 				ArtifactFile: conf.GetConfig().GetString("artifact_file"),
 			})
@@ -87,7 +86,7 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 			}
 			var marker doaction.Action = doaction.DropletMarker{
 				DropletID: droplet.ID,
-				Info: doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")),
+				Info:      doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")),
 				Filename:  "/root/artifact_sha",
 			}
 			actions = append(actions, &transport, &starter, &marker)

@@ -58,7 +58,7 @@ func executeWithTimeout(dropletID int, done chan struct {
 	client, err := simplessh.ConnectWithKeyFile(ip+":22", "root", "")
 	errorcheck.ExitOn(err, "error establishing connection to "+ip)
 	defer client.Close()
-	output, err := client.Exec("cat /root/artifact_sha")
+	output, err := client.Exec("set -eo pipefail; cat /root/artifact_sha")
 	done <- struct {
 		output string
 		err    error
