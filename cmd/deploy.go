@@ -9,6 +9,7 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"log"
+	"strings"
 )
 
 var dryRun bool
@@ -45,7 +46,7 @@ func do(cmd *cobra.Command, args []string) {
 func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doaction.Action, error) {
 	var actions []*doaction.Action
 	numDropletsToBeCreated := desiredState.NumDroplets
-	var dropletsToBeDestroyed = []int{}
+	var dropletsToBeDestroyed []int
 	for _, droplet := range state.Droplets {
 		if droplet.SizeSlug == desiredState.SizeSlug &&
 			droplet.Region.Slug == desiredState.Region &&
@@ -75,8 +76,22 @@ func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doac
 	// TODO: some droplets might have an outdated version of the artifact and might need to be updated and retagged
 	for _, droplet := range state.Droplets {
 		if !contains(dropletsToBeDestroyed, droplet.ID) &&
-			doaction.GetDropletArtifactSha(droplet.ID) != doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")) {
-			log.Println("droplet needs new version of artifact ", droplet.ID)
+			strings.TrimSpace(doaction.GetDropletArtifactSha(droplet.ID)) !=
+			strings.TrimSpace( doaction.GetFileSha(conf.GetConfig().GetString("artifact_file"))) {
+			var transport doaction.Action = doaction.Action( &doaction.Transport{
+				ID:           droplet.ID,
+				ArtifactFile: conf.GetConfig().GetString("artifact_file"),
+			})
+			var starter doaction.Action = doaction.Starter{
+				ID: droplet.ID,
+			}
+			var marker doaction.Action = doaction.DropletMarker{
+				DropletID: droplet.ID,
+				Info: doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")),
+				Filename:  "/root/artifact_sha",
+			}
+			actions = append(actions, &transport, &starter, &marker)
+			log.Println("droplet needs new version of artifact ", droplet.ID, doaction.GetDropletArtifactSha(droplet.ID), doaction.GetFileSha(conf.GetConfig().GetString("artifact_file")))
 		}
 		log.Printf("current sha on %s is %s", string(droplet.ID), doaction.GetDropletArtifactSha(droplet.ID))
 

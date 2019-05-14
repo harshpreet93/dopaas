@@ -70,7 +70,7 @@ func (a AddDroplets) Execute(runID string) error {
 		errorcheck.ExitOn(err, "error tagging droplet")
 
 		err = DropletMarker{
-			dropletID: droplet.ID,
+			DropletID: droplet.ID,
 			Info:      GetFileSha(conf.GetConfig().GetString("artifact_file")),
 			Filename:  "/root/artifact_sha",
 		}.Execute(runID)

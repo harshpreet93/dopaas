@@ -67,3 +67,7 @@ func (t Transport) tryToGetIPForId(ID int) (string, error) {
 	}
 	return "", err
 }
+
+func (t Transport) Print(dryRun bool) {
+
+}

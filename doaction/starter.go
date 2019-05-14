@@ -11,6 +11,10 @@ type Starter struct {
 	ID int
 }
 
+func (a Starter) Print(dryRun bool) {
+
+}
+
 func (a Starter) Execute(runID string) error {
 	done := make(chan error)
 	go a.executeWithTimeout(runID, done)
