@@ -18,7 +18,7 @@ func (a Starter) Print(dryRun bool) {
 	if dryRun {
 		color.Green("would start")
 	}
-	color.Green("++++++ "+prefix+" app on "+strconv.Itoa(a.ID))
+	color.Green("++++++ " + prefix + " app on " + strconv.Itoa(a.ID))
 }
 
 func (a Starter) Execute(runID string) error {

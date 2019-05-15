@@ -19,7 +19,7 @@ func (d DropletMarker) Print(dryRun bool) {
 	if dryRun {
 		color.Green("would mark ")
 	}
-	color.Green("++++++ "+prefix+strconv.Itoa(d.DropletID)+" with artifact sha")
+	color.Green("++++++ " + prefix + strconv.Itoa(d.DropletID) + " with artifact sha")
 }
 
 func (d DropletMarker) Execute(runID string) error {

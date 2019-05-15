@@ -76,5 +76,5 @@ func (t Transport) Print(dryRun bool) {
 	if dryRun {
 		color.Green("would transport")
 	}
-	color.Green("++++++ "+prefix+" artifact to "+strconv.Itoa(t.ID))
+	color.Green("++++++ " + prefix + " artifact to " + strconv.Itoa(t.ID))
 }

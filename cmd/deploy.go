@@ -7,9 +7,9 @@ import (
 	"github.com/harshpreet93/dopaas/dostate"
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/harshpreet93/dopaas/predeploy"
+	"github.com/kyokomi/emoji"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
-	"github.com/kyokomi/emoji"
 	"log"
 	"strings"
 )
