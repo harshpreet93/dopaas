@@ -1,9 +1,11 @@
 package doaction
 
 import (
+	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/sfreiberg/simplessh"
+	"strconv"
 	"time"
 )
 
@@ -12,10 +14,15 @@ type Starter struct {
 }
 
 func (a Starter) Print(dryRun bool) {
-
+	prefix := "starting"
+	if dryRun {
+		color.Green("would start")
+	}
+	color.Green("++++++ "+prefix+" app on "+strconv.Itoa(a.ID))
 }
 
 func (a Starter) Execute(runID string) error {
+	a.Print(false)
 	done := make(chan error)
 	go a.executeWithTimeout(runID, done)
 	select {

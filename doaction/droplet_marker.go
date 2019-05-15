@@ -1,8 +1,10 @@
 package doaction
 
 import (
+	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/errorcheck"
 	"github.com/sfreiberg/simplessh"
+	"strconv"
 	"time"
 )
 
@@ -13,10 +15,15 @@ type DropletMarker struct {
 }
 
 func (d DropletMarker) Print(dryRun bool) {
-
+	prefix := "marking "
+	if dryRun {
+		color.Green("would mark ")
+	}
+	color.Green("++++++ "+prefix+strconv.Itoa(d.DropletID)+" with artifact sha")
 }
 
 func (d DropletMarker) Execute(runID string) error {
+	d.Print(false)
 	done := make(chan error)
 	go d.executeWithTimeout(runID, done)
 	select {

@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"github.com/digitalocean/godo"
+	"github.com/fatih/color"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/doauth"
 	"log"
 	"os/exec"
+	"strconv"
 	"time"
 )
 
@@ -17,6 +19,7 @@ type Transport struct {
 }
 
 func (t Transport) Execute(runID string) error {
+	t.Print(false)
 	return t.try()
 }
 
@@ -69,5 +72,9 @@ func (t Transport) tryToGetIPForId(ID int) (string, error) {
 }
 
 func (t Transport) Print(dryRun bool) {
-
+	prefix := "transporting"
+	if dryRun {
+		color.Green("would transport")
+	}
+	color.Green("++++++ "+prefix+" artifact to "+strconv.Itoa(t.ID))
 }
