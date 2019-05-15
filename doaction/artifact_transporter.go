@@ -28,7 +28,7 @@ func (t Transport) try() error {
 			time.Sleep(10000)
 			continue
 		}
-		cmd := exec.Command("rsync", "-r", "--delete",
+		cmd := exec.Command("rsync", "-e", "ssh -o StrictHostKeyChecking=no", "-r", "--delete",
 			conf.GetConfig().GetString("artifact_file"), "root@"+IP+":/root", "--timeout=60")
 		var errOut bytes.Buffer
 		cmd.Stderr = &errOut
