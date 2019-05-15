@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/harshpreet93/dopaas/conf"
 	"github.com/harshpreet93/dopaas/doaction"
 	"github.com/harshpreet93/dopaas/dostate"
@@ -8,6 +9,7 @@ import (
 	"github.com/harshpreet93/dopaas/predeploy"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
+	"github.com/kyokomi/emoji"
 	"log"
 	"strings"
 )
@@ -41,6 +43,9 @@ func do(cmd *cobra.Command, args []string) {
 			(*action).Print(dryRun)
 		}
 	}
+	success_message := emoji.Sprint(":rocket: :rocket: :rocket: SUCCESS! :rocket: :rocket: :rocket:")
+	fmt.Println(success_message)
+
 }
 
 func diff(state *dostate.ProjectState, desiredState *conf.DesiredState) ([]*doaction.Action, error) {

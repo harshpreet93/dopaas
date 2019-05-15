@@ -6,9 +6,11 @@ require (
 	github.com/davidmz/go-pageant v1.0.1 // indirect
 	github.com/digitalocean/godo v1.13.0
 	github.com/fatih/color v1.7.0
+	github.com/gernest/wow v0.1.0
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/fs v0.1.0 // indirect
+	github.com/kyokomi/emoji v2.1.0+incompatible
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
